@@ -1,0 +1,161 @@
+{
+  "fqn": "solply/market-data",
+  "name": "market-data",
+  "operator": "solply",
+  "origin": "solply",
+  "title": "Solply Food Supply Trade Index",
+  "description": "Real-world food-supply settlement data from a franchise ecosystem - executed price and demand indexes, verified by on-chain settlement, sold via x402",
+  "use_case": "Executed prices and demand trends for real-world food-supply SKUs (not crypto tokens). Every sample is an on-chain settled trade on Solana. For supply-chain price research and procurement negotiation grounding.",
+  "category": "data",
+  "service_url": "https://solply-api-965647250280.us-central1.run.app",
+  "version": "",
+  "openapi": {
+    "path": "openapi.json"
+  },
+  "source": {
+    "skill": "pay-skills",
+    "repo": "solana-foundation/pay-skills",
+    "path": "providers/solply/market-data/PAY.md"
+  },
+  "content": "프랜차이즈 본사-가맹점 식자재 대금(물대) 자율 정산 생태계 **Solply**가 실거래에서\n집계한 데이터 상품. 에이전트들이 x402로 협상·정산한 체결(청구서 정산 + 지점 간\n직거래)만 표본으로 쓴다 — 모든 표본에 온체인 증빙이 있다.\n\n> **결제 네트워크: Solana devnet USDC** (해커톤 데모 생태계 — 메인넷 전환 전).\n> 유료 경로는 `/x402/data/*` 두 개뿐이며, 나머지 API는 데모 대시보드용 공개 조회다.\n\n## 상품\n\n| 경로 | 상품 | 내용 |\n|---|---|---|\n| `GET /x402/data/market/{sku}` | 체결가 지수 | 최근 7일 가중 평균 단가 · 표본수(본사 발주/직거래 구분) · 전주 대비 추세 |\n| `GET /x402/data/demand/{sku}` | 수요 지수 | 최근 7일 판매량 · 일평균 · 참여 지점 수 · 추세 |\n\n구매 흐름은 표준 x402: GET이 `402`와 주문서(memo = 주문 ID)를 주고, USDC 지불 후\n`POST /x402/data/orders/{order_id}/settle`에 서명을 제출하면 지수를 인도한다.\n주문 하나는 한 번만 이행된다 (같은 서명의 재시도는 멱등).\n\n## Spend-aware usage\n\n- 지수는 7일 창 집계라 분 단위로 변하지 않는다 — **같은 SKU를 10분 안에 두 번 사지 말 것**.\n- SKU 목록은 무료 조회(`GET /api/shop`)로 먼저 확인하고, 필요한 품목만 살 것.\n- 추세만 필요하면 `market` 하나로 충분하다 — `demand`는 수량 계획이 필요할 때만.",
+  "openapi_doc": {
+    "info": {
+      "description": "Executed-price and demand indexes from real food-supply settlements, sold via x402 (Solana devnet USDC).",
+      "title": "Solply Food Supply Trade Index",
+      "version": "1.0.0"
+    },
+    "openapi": "3.1.0",
+    "paths": {
+      "/x402/data/orders/{order_id}/settle": {
+        "post": {
+          "description": "결제 증빙을 대조하고, 통과하면 지수를 인도한다.",
+          "operationId": "settle_x402_data_orders__order_id__settle_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "order_id",
+              "required": true,
+              "schema": {
+                "title": "Order Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "PAYMENT-SIGNATURE",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payment-Signature"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Submit the USDC payment proof and receive the purchased index",
+          "tags": [
+            "data"
+          ]
+        }
+      },
+      "/x402/data/{product}/{sku}": {
+        "get": {
+          "description": "데이터 견적 — 402와 함께 주문서를 발행한다.",
+          "operationId": "quote_x402_data__product___sku__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "product",
+              "required": true,
+              "schema": {
+                "title": "Product",
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "sku",
+              "required": true,
+              "schema": {
+                "title": "Sku",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Buy the executed-price or demand index for a food-supply SKU",
+          "tags": [
+            "data"
+          ]
+        }
+      }
+    },
+    "servers": [
+      {
+        "url": "https://solply-api-965647250280.us-central1.run.app"
+      }
+    ]
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "x402/data/orders/{order_id}/settle",
+      "description": "Submit the USDC payment proof and receive the purchased index",
+      "resource": "data",
+      "pricing": null,
+      "probe_status": "parameterized_not_found"
+    },
+    {
+      "method": "GET",
+      "path": "x402/data/{product}/{sku}",
+      "description": "Buy the executed-price or demand index for a food-supply SKU",
+      "resource": "data",
+      "pricing": null,
+      "probe_status": "parameterized_not_found"
+    }
+  ]
+}

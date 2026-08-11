@@ -1,0 +1,122 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Solply Food Supply Trade Index",
+    "version": "1.0.0",
+    "description": "Executed-price and demand indexes from real food-supply settlements, sold via x402 (Solana devnet USDC)."
+  },
+  "servers": [
+    {
+      "url": "https://solply-api-965647250280.us-central1.run.app"
+    }
+  ],
+  "paths": {
+    "/x402/data/{product}/{sku}": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Buy the executed-price or demand index for a food-supply SKU",
+        "description": "데이터 견적 — 402와 함께 주문서를 발행한다.",
+        "operationId": "quote_x402_data__product___sku__get",
+        "parameters": [
+          {
+            "name": "product",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Product"
+            }
+          },
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sku"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/x402/data/orders/{order_id}/settle": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Submit the USDC payment proof and receive the purchased index",
+        "description": "결제 증빙을 대조하고, 통과하면 지수를 인도한다.",
+        "operationId": "settle_x402_data_orders__order_id__settle_post",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "PAYMENT-SIGNATURE",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Payment-Signature"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

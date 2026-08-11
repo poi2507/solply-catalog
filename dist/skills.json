@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "generated_at": "2026-08-11T23:53:29Z",
+  "base_url": "https://raw.githubusercontent.com/poi2507/solply-catalog/main",
+  "provider_count": 1,
+  "affiliate_count": 0,
+  "aggregator_count": 0,
+  "providers": [
+    {
+      "fqn": "solply/market-data",
+      "title": "Solply Food Supply Trade Index",
+      "description": "Real-world food-supply settlement data from a franchise ecosystem - executed price and demand indexes, verified by on-chain settlement, sold via x402",
+      "use_case": "Executed prices and demand trends for real-world food-supply SKUs (not crypto tokens). Every sample is an on-chain settled trade on Solana. For supply-chain price research and procurement negotiation grounding.",
+      "category": "data",
+      "service_url": "https://solply-api-965647250280.us-central1.run.app",
+      "endpoint_count": 2,
+      "has_metering": false,
+      "has_free_tier": true,
+      "min_price_usd": 0.0,
+      "max_price_usd": 0.0,
+      "sha": "92738a53c5b880e3"
+    }
+  ],
+  "affiliates": [],
+  "aggregators": []
+}

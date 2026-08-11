@@ -1,12 +1,12 @@
 ---
 name: market-data
-title: "Solply 물대 실거래 지수"
-description: "프랜차이즈 식자재(물대) 실거래 데이터 — 온체인 정산으로 검증된 체결가·수요 지수를 x402로 판매"
-use_case: "크립토 토큰이 아니라 실물 SKU(냉장 닭, 튀김유, 포장재 등 식자재)의 실거래 체결가·수요 추세가 필요할 때. 프랜차이즈 공급망 가격 조사, 조달 협상의 근거 데이터, 식자재 수요 예측에 쓴다. 모든 표본은 Solana 온체인 정산이 확인된 체결만 집계한 비식별 통계다."
+title: "Solply Food Supply Trade Index"
+description: "Real-world food-supply settlement data from a franchise ecosystem - executed price and demand indexes, verified by on-chain settlement, sold via x402"
+use_case: "Executed prices and demand trends for real-world food-supply SKUs (not crypto tokens). Every sample is an on-chain settled trade on Solana. For supply-chain price research and procurement negotiation grounding."
 category: data
 service_url: https://solply-api-965647250280.us-central1.run.app
 openapi:
-  url: https://solply-api-965647250280.us-central1.run.app/openapi.json
+  path: openapi.json
 ---
 
 프랜차이즈 본사-가맹점 식자재 대금(물대) 자율 정산 생태계 **Solply**가 실거래에서
